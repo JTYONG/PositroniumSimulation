@@ -19,6 +19,9 @@ void PsSimEventAction::BeginOfEventAction(const G4Event*) {
     fFirstHitTime = -1.;
     fFirstHitEdep = 0.;
     fFirstHitPDG  = 0;
+    fFirstHitX    = 0.;
+    fFirstHitY    = 0.;
+    fFirstHitZ    = 0.;
 }
 
 void PsSimEventAction::EndOfEventAction(const G4Event* event) {
@@ -40,6 +43,9 @@ void PsSimEventAction::EndOfEventAction(const G4Event* event) {
                     fFirstHitTime = tBest;
                     fFirstHitEdep = h->GetEdep();
                     fFirstHitPDG  = h->GetPDGCode();
+                    fFirstHitX    = h->GetPosition().x() / CLHEP::mm;
+                    fFirstHitY    = h->GetPosition().y() / CLHEP::mm;
+                    fFirstHitZ    = h->GetPosition().z() / CLHEP::mm;
                 }
             }
         }
@@ -48,18 +54,19 @@ void PsSimEventAction::EndOfEventAction(const G4Event* event) {
     // Read o-Ps data written by PsFormationProcess
     auto& ps = PsEventData::Instance();
 
-    // Fill ROOT ntuple — column IDs are global sequential (0-7)
-    // col0:eventID(I) col1:totalEdep(D) col2:nHits(I) col3:firstHitTime(D)
-    // col4:firstHitEdep(D) col5:firstHitPDG(I) col6:oPsFormed(I) col7:oPsLifetime(D)
+    // Fill ROOT ntuple — global sequential column IDs 0-10
     auto* am = G4AnalysisManager::Instance();
-    am->FillNtupleIColumn(0, 0, event->GetEventID());
-    am->FillNtupleDColumn(0, 1, fTotalEdep);
-    am->FillNtupleIColumn(0, 2, fNHits);
-    am->FillNtupleDColumn(0, 3, fFirstHitTime);
-    am->FillNtupleDColumn(0, 4, fFirstHitEdep);
-    am->FillNtupleIColumn(0, 5, fFirstHitPDG);
-    am->FillNtupleIColumn(0, 6, static_cast<G4int>(ps.oPsFormed));
-    am->FillNtupleDColumn(0, 7, ps.oPsLifetime);
+    am->FillNtupleIColumn(0, 0,  event->GetEventID());
+    am->FillNtupleDColumn(0, 1,  fTotalEdep);
+    am->FillNtupleIColumn(0, 2,  fNHits);
+    am->FillNtupleDColumn(0, 3,  fFirstHitTime);
+    am->FillNtupleDColumn(0, 4,  fFirstHitEdep);
+    am->FillNtupleIColumn(0, 5,  fFirstHitPDG);
+    am->FillNtupleIColumn(0, 6,  static_cast<G4int>(ps.oPsFormed));
+    am->FillNtupleDColumn(0, 7,  ps.oPsLifetime);
+    am->FillNtupleDColumn(0, 8,  fFirstHitX);
+    am->FillNtupleDColumn(0, 9,  fFirstHitY);
+    am->FillNtupleDColumn(0, 10, fFirstHitZ);
     am->AddNtupleRow(0);
 
     // Write TXT backup line
@@ -72,6 +79,9 @@ void PsSimEventAction::EndOfEventAction(const G4Event* event) {
             << fFirstHitEdep << " "
             << fFirstHitPDG  << " "
             << static_cast<int>(ps.oPsFormed) << " "
-            << ps.oPsLifetime << "\n";
+            << ps.oPsLifetime << " "
+            << fFirstHitX    << " "
+            << fFirstHitY    << " "
+            << fFirstHitZ    << "\n";
     }
 }

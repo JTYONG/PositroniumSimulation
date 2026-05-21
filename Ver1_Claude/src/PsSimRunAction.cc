@@ -21,7 +21,7 @@ void PsSimRunAction::BeginOfRunAction(const G4Run*) {
 
     am->OpenFile(fOutMsg->GetRootFile());
 
-    // Book ntuple (global sequential column IDs 0–7)
+    // Book ntuple (global sequential column IDs 0–10)
     am->CreateNtuple("PsTree", "PALS simulation per-event summary");
     am->CreateNtupleIColumn("eventID");      // col 0
     am->CreateNtupleDColumn("totalEdep");    // col 1  [MeV]
@@ -31,6 +31,9 @@ void PsSimRunAction::BeginOfRunAction(const G4Run*) {
     am->CreateNtupleIColumn("firstHitPDG");  // col 5
     am->CreateNtupleIColumn("oPsFormed");    // col 6  (0/1)
     am->CreateNtupleDColumn("oPsLifetime");  // col 7  [ns] (-1 if no o-Ps)
+    am->CreateNtupleDColumn("firstHitX");    // col 8  [mm]
+    am->CreateNtupleDColumn("firstHitY");    // col 9  [mm]
+    am->CreateNtupleDColumn("firstHitZ");    // col 10 [mm]
     am->FinishNtuple();
 
     // Open per-thread TXT backup (master thread skips)
@@ -39,7 +42,8 @@ void PsSimRunAction::BeginOfRunAction(const G4Run*) {
         G4String path = fOutMsg->GetTxtBase() + "_t" + std::to_string(tid) + ".txt";
         fTxtStream.open(path);
         fTxtStream << "eventID totalEdep_MeV nHits firstHitTime_ns "
-                      "firstHitEdep_MeV firstHitPDG oPsFormed oPsLifetime_ns\n";
+                      "firstHitEdep_MeV firstHitPDG oPsFormed oPsLifetime_ns "
+                      "firstHitX_mm firstHitY_mm firstHitZ_mm\n";
     }
 }
 

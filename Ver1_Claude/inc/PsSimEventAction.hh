@@ -24,4 +24,7 @@ private:
     G4double fFirstHitTime = -1.;
     G4double fFirstHitEdep = 0.;
     G4int    fFirstHitPDG  = 0;
+    G4double fFirstHitX    = 0.;
+    G4double fFirstHitY    = 0.;
+    G4double fFirstHitZ    = 0.;
 };
