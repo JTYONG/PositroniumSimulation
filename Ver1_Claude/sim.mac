@@ -1,0 +1,42 @@
+# ═══════════════════════════════════════════════════════════════════
+# sim.mac — PALS Positronium Simulation Control Macro
+# All geometry and physics parameters are set here before /run/initialize.
+# ═══════════════════════════════════════════════════════════════════
+
+# ── Verbosity ──────────────────────────────────────────────────────
+/control/verbose 1
+/run/verbose     1
+/event/verbose   0
+/tracking/verbose 0
+/process/verbose 0
+
+# ── Geometry ───────────────────────────────────────────────────────
+/sim/geometry/worldHalfSize  10.0 cm
+/sim/geometry/scintRmin      5.0 cm
+/sim/geometry/scintRmax      7.0 cm
+/sim/geometry/scintHalfY     5.0 cm
+/sim/geometry/silicaRmin     2.0 cm
+/sim/geometry/silicaRmax     2.5 cm
+/sim/geometry/silicaDensity  1.0 g/cm3
+
+# ── Ortho-Ps formation physics ─────────────────────────────────────
+/sim/oPs/formationProb  0.75
+/sim/oPs/meanLifetime   2.0 ns
+
+# ── Output file paths ──────────────────────────────────────────────
+/sim/output/rootFile  result_cache/root_file/pals_output
+/sim/output/txtBase   result_cache/pals_output
+
+# ── Initialise ─────────────────────────────────────────────────────
+/run/initialize
+
+# ── Radioactive decay: allow full decay chain within Z/A limits ────
+/process/had/rdm/verbose 0
+/process/had/rdm/thresholdForVeryLongDecayTime 1.0e+60 year
+/process/had/rdm/nucleusLimits 1 50 1 40
+
+# ── Multi-threading (uncomment to enable) ─────────────────────────
+#/run/numberOfThreads 4
+
+# ── Run ────────────────────────────────────────────────────────────
+/run/beamOn 10000
